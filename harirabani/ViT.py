@@ -55,7 +55,7 @@ class FourierLayer(nn.Module):
         super(FourierLayer, self).__init__()
 
     def forward(self, x):
-        return torch.fft.fft(x, dim=-1)
+        return torch.fft.fft(x, dim=-1).float().real
 
 class FeedForward(nn.Module):
     def __init__(self, dim, hidden_dim, dropout = 0.):

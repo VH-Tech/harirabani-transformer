@@ -47,4 +47,7 @@ model = PHMFourierViT(
 )
 
 print(sum(p.numel() for p in model.parameters()))
+i = torch.randn(1, 3, 224, 224).cpu()
+model = model.cpu()
+print(model(i).shape)
 
