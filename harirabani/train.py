@@ -263,8 +263,8 @@ transform_train = transforms.Compose([transforms.RandomCrop(32, padding=4),trans
 train_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=True, transform=transform_train, download=True)
 test_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=False, transform=transform_test, download=True)
 
-train_loader = DataLoader(dataset=train_dataset, batch_size=512, shuffle=True)
-test_loader = DataLoader(dataset=test_dataset, batch_size=512, shuffle=False)
+train_loader = DataLoader(dataset=train_dataset, batch_size=4096, shuffle=True)
+test_loader = DataLoader(dataset=test_dataset, batch_size=4096, shuffle=False)
 
 #Loss and optimizer
 
