@@ -1,30 +1,47 @@
-from ViT import PHMViT, ViT
+from ViT import PHMViT, ViT, PHMFourierViT
 import torch
 
-print("PHMViT Model")
+print("ViT Model")
 
-PHMmodel = PHMViT(
-    image_size = 32,
+model = ViT(
+    image_size = 224,
     patch_size = 16,
     num_classes = 10,
-    dim = 512,
-    depth = 6,
-    heads = 8,
-    mlp_dim = 1024,
+    dim = 768,
+    depth = 12,
+    heads = 12,
+    mlp_dim = 3072,
     dropout = 0.1,
     emb_dropout = 0.1
 )
 
-print(sum(p.numel() for p in PHMmodel.parameters()))
+print(sum(p.numel() for p in model.parameters()))
 
-model = ViT(
-    image_size = 32,
+print("PHMViT Model")
+
+model = PHMViT(
+    image_size = 224,
     patch_size = 16,
     num_classes = 10,
-    dim = 512,
-    depth = 6,
-    heads = 8,
-    mlp_dim = 1024,
+    dim = 768,
+    depth = 12,
+    heads = 12,
+    mlp_dim = 3072,
+    dropout = 0.1,
+    emb_dropout = 0.1
+)
+
+print(sum(p.numel() for p in model.parameters()))
+
+print("PHMFourierViT Model")
+model = PHMFourierViT(
+    image_size = 224,
+    patch_size = 16,
+    num_classes = 10,
+    dim = 768,
+    depth = 12,
+    heads = 12,
+    mlp_dim = 3072,
     dropout = 0.1,
     emb_dropout = 0.1
 )
