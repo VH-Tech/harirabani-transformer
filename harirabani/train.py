@@ -17,7 +17,8 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
-
+parser.add_argument('--arch', default='phm', type=str,
+                    help='model architecture: phm or vit')
 parser.add_argument('--outdir', type=str, default="/storage/vatsal/models/cifar10",
                     help='folder to save model and training log)')
 parser.add_argument('--workers', default=4, type=int, metavar='N',
@@ -200,7 +201,11 @@ def test(loader: DataLoader, model: torch.nn.Module, criterion, noise_sd: float)
 
         return (losses.avg, top1.avg)
 
-PHMmodel = PHMViT(
+
+#Create model
+if args.arch == 'phm':
+    args.outdir = os.path.join(args.outdir, "PHM_VIT")
+    model = PHMViT(
     image_size = 224,
     patch_size = 16,
     num_classes = 10,
@@ -212,7 +217,9 @@ PHMmodel = PHMViT(
     emb_dropout = 0.1
 )
 
-model = ViT(
+else:
+    args.outdir = os.path.join(args.outdir, "VIT-pytorch")
+    model = ViT(
     image_size = 224,
     patch_size = 16,
     num_classes = 10,
@@ -226,10 +233,10 @@ model = ViT(
 
 #Load cifar10 dataset
 
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+transform = transforms.Compose([transforms.Resize(224),transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-train_dataset = torchvision.datasets.CIFAR10(root='data', train=True, transform=transform, download=True)
-test_dataset = torchvision.datasets.CIFAR10(root='data', train=False, transform=transform, download=True)
+train_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=True, transform=transform, download=True)
+test_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=False, transform=transform, download=True)
 
 train_loader = DataLoader(dataset=train_dataset, batch_size=100, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=100, shuffle=False)

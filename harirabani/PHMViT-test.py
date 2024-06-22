@@ -4,7 +4,7 @@ import torch
 print("PHMViT Model")
 
 PHMmodel = PHMViT(
-    image_size = 224,
+    image_size = 32,
     patch_size = 16,
     num_classes = 10,
     dim = 512,
@@ -18,7 +18,7 @@ PHMmodel = PHMViT(
 print(sum(p.numel() for p in PHMmodel.parameters()))
 
 model = ViT(
-    image_size = 224,
+    image_size = 32,
     patch_size = 16,
     num_classes = 10,
     dim = 512,
@@ -31,4 +31,3 @@ model = ViT(
 
 print(sum(p.numel() for p in model.parameters()))
 
-print(PHMmodel(torch.randn(1, 3, 224, 224)).shape)
