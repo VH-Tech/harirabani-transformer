@@ -1,4 +1,4 @@
-from ViT import PHMViT, ViT
+from ViT import PHMViT, ViT, PHMFourierViT
 import torch
 from utils import AverageMeter, accuracy, count_parameters_total, count_parameters_trainable
 import random
@@ -216,7 +216,7 @@ def test(loader: DataLoader, model: torch.nn.Module, criterion, noise_sd: float)
 if args.arch == 'phm':
     args.outdir = os.path.join(args.outdir, "PHM_VIT")
     model = PHMViT(
-    image_size = 224,
+    image_size = 32,
     patch_size = 16,
     num_classes = 10,
     dim = 512,
@@ -227,7 +227,7 @@ if args.arch == 'phm':
     emb_dropout = 0.1
 )
 
-else:
+elif args.arch == 'vit':
     args.outdir = os.path.join(args.outdir, "VIT-pytorch")
     model = ViT(
     image_size = 224,
@@ -240,13 +240,28 @@ else:
     dropout = 0.1,
     emb_dropout = 0.1
 )
+    
+elif args.arch == 'phm_fourier':
+    args.outdir = os.path.join(args.outdir, "PHM_Fourier")
+    model = PHMFourierViT(
+    image_size = 32,
+    patch_size = 16,
+    num_classes = 10,
+    dim = 512,
+    depth = 6,
+    heads = 8,
+    mlp_dim = 1024,
+    dropout = 0.1,
+    emb_dropout = 0.1
+)
 model.to("cuda")
 #Load cifar10 dataset
 
-transform = transforms.Compose([transforms.Resize(224),transforms.ToTensor(), transforms.Normalize((0.4913997551666284, 0.48215855929893703, 0.4465309133731618), (0.24703225141799082, 0.24348516474564, 0.26158783926049628))])
+transform_test = transforms.Compose([transforms.Resize(32),transforms.ToTensor(), transforms.Normalize((0.4913997551666284, 0.48215855929893703, 0.4465309133731618), (0.24703225141799082, 0.24348516474564, 0.26158783926049628))])
+transform_train = transforms.Compose([transforms.RandomCrop(32, padding=4),transforms.RandomHorizontalFlip(), transforms.ToTensor(), transforms.Normalize((0.4913997551666284, 0.48215855929893703, 0.4465309133731618), (0.24703225141799082, 0.24348516474564, 0.26158783926049628))])
 
-train_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=True, transform=transform, download=True)
-test_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=False, transform=transform, download=True)
+train_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=True, transform=transform_train, download=True)
+test_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=False, transform=transform_test, download=True)
 
 train_loader = DataLoader(dataset=train_dataset, batch_size=512, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=512, shuffle=False)
