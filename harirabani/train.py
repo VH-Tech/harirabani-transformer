@@ -72,6 +72,16 @@ args = parser.parse_args()
 torch.manual_seed(0)
 torch.cuda.manual_seed_all(0)
 
+wandb.init(
+    # set the wandb project where this run will be logged
+    project="ViT",
+    # track hyperparameters and run metadata
+    config={
+    "learning_rate": args.lr,
+    "epochs": args.epochs,
+    }
+    )
+
 accelerator = Accelerator()
 
 
@@ -230,36 +240,26 @@ else:
     dropout = 0.1,
     emb_dropout = 0.1
 )
-
+model.to("cuda")
 #Load cifar10 dataset
 
-transform = transforms.Compose([transforms.Resize(224),transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+transform = transforms.Compose([transforms.Resize(224),transforms.ToTensor(), transforms.Normalize((0.4913997551666284, 0.48215855929893703, 0.4465309133731618), (0.24703225141799082, 0.24348516474564, 0.26158783926049628))])
 
 train_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=True, transform=transform, download=True)
 test_dataset = torchvision.datasets.CIFAR10(root='/storage/vatsal/datasets/cifar10', train=False, transform=transform, download=True)
 
-train_loader = DataLoader(dataset=train_dataset, batch_size=100, shuffle=True)
-test_loader = DataLoader(dataset=test_dataset, batch_size=100, shuffle=False)
+train_loader = DataLoader(dataset=train_dataset, batch_size=512, shuffle=True)
+test_loader = DataLoader(dataset=test_dataset, batch_size=512, shuffle=False)
 
 #Loss and optimizer
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
-scheduler = CosineAnnealingLR(optimizer, T_max=200)
+optimizer = optim.Adam(model.parameters(), lr=args.lr)
+scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs+100)
 
 #Train the network
 
-wandb.init(
-    # set the wandb project where this run will be logged
-    project="PHMViT",
-    # track hyperparameters and run metadata
-    config={
-    "learning_rate": args.lr,
-    "architecture": args.arch,
-    "dataset": args.dataset,
-    "epochs": args.epochs,
-    }
-    )
+
 
 train_loader, test_loader, model, optimizer = accelerator.prepare(train_loader, test_loader, model, optimizer)
 print("Training " +  str((count_parameters_trainable(model)/(count_parameters_total(model)))*100)  +"% of the parameters")
