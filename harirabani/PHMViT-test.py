@@ -1,10 +1,10 @@
-from ViT import PHMViT, ViT, PHMFourierViT
+from ViT import PHMViT, ViT, HariraBaniViT
 import torch
 
 print("ViT Model")
 
 model = ViT(
-    image_size = 224,
+    image_size = 32,
     patch_size = 16,
     num_classes = 10,
     dim = 768,
@@ -20,7 +20,7 @@ print(sum(p.numel() for p in model.parameters()))
 print("PHMViT Model")
 
 model = PHMViT(
-    image_size = 224,
+    image_size = 32,
     patch_size = 16,
     num_classes = 10,
     dim = 768,
@@ -33,9 +33,9 @@ model = PHMViT(
 
 print(sum(p.numel() for p in model.parameters()))
 
-print("PHMFourierViT Model")
-model = PHMFourierViT(
-    image_size = 224,
+print("HariraBaniViT Model")
+model = HariraBaniViT(
+    image_size = 32,
     patch_size = 16,
     num_classes = 10,
     dim = 768,
@@ -47,7 +47,7 @@ model = PHMFourierViT(
 )
 
 print(sum(p.numel() for p in model.parameters()))
-i = torch.randn(1, 3, 224, 224).cpu()
+i = torch.randn(1, 3, 32, 32).cpu()
 model = model.cpu()
 print(model(i).shape)
 

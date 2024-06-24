@@ -1,4 +1,4 @@
-from ViT import PHMViT, ViT, PHMFourierViT
+from ViT import PHMViT, ViT, HariraBaniViT
 import torch
 from utils import AverageMeter, accuracy, count_parameters_total, count_parameters_trainable
 import random
@@ -243,7 +243,7 @@ elif args.arch == 'vit':
     
 elif args.arch == 'phm_fourier':
     args.outdir = os.path.join(args.outdir, "PHM_Fourier")
-    model = PHMFourierViT(
+    model = HariraBaniViT(
     image_size = 32,
     patch_size = 16,
     num_classes = 10,

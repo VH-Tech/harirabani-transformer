@@ -159,7 +159,7 @@ class PHMTransformer(nn.Module):
 
         return self.norm(x)
 
-class PHMFourierTransformer(nn.Module):
+class HariraBaniTransformer(nn.Module):
     def __init__(self, dim, depth, heads, dim_head, mlp_dim, dropout = 0.):
         super().__init__()
         self.norm = nn.LayerNorm(dim)
@@ -177,7 +177,6 @@ class PHMFourierTransformer(nn.Module):
             x = ff(x) + x
 
         return self.norm(x)
-
 
 class ViT(nn.Module):
     def __init__(self, *, image_size, patch_size, num_classes, dim, depth, heads, mlp_dim, pool = 'cls', channels = 3, dim_head = 64, dropout = 0., emb_dropout = 0.):
@@ -271,7 +270,7 @@ class PHMViT(nn.Module):
         x = self.to_latent(x)
         return self.mlp_head(x)
 
-class PHMFourierViT(nn.Module):
+class HariraBaniViT(nn.Module):
     def __init__(self, *, image_size, patch_size, num_classes, dim, depth, heads, mlp_dim, pool = 'cls', channels = 3, dim_head = 64, dropout = 0., emb_dropout = 0.):
         super().__init__()
         image_height, image_width = pair(image_size)
@@ -294,7 +293,7 @@ class PHMFourierViT(nn.Module):
         self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
         self.dropout = nn.Dropout(emb_dropout)
 
-        self.transformer = PHMFourierTransformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+        self.transformer = HariraBaniTransformer(dim, depth, heads, dim_head, mlp_dim, dropout)
 
         self.pool = pool
         self.to_latent = nn.Identity()
